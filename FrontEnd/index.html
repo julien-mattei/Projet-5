@@ -9,11 +9,19 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
+	<script src="https://kit.fontawesome.com/9988122eb3.js" crossorigin="anonymous"></script>
 	<script src="script.js" defer></script>
 </head>
 <body>
+	<div class="hide"  hidden>
+		<div class="edition flex-center">
+			<i class="fa-solid fa-pen-to-square" style="color: #ffffff;"></i>
+			<a href="#modal1" class="js-modal">Mode Édition</a>
+		</div>
+		
+	</div>
 <header>
-	<h1>Sophie Bluel <span>Architecte d'inteérieur</span></h1>
+	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
 		<ul>
 			<li>projets</li>
@@ -36,9 +44,15 @@
 		</article>
 	</section>
 	<section id="portfolio">
-		<h2>Mes Projets</h2>
-		<div class="gallery">
+		<div class="projets flex-center">
+			<h2>Mes Projets</h2>
+			<div class="edit flex-center">
+				<span class="hide" hidden><i class="fa-solid fa-pen-to-square" style="color: #000000;" ></i></span>
+				<a href="#modal1" class="js-modal hide" hidden>Modifier</a>
+			</div>
 		</div>
+		<div id="filtres" class="filtres"></div>
+		<div id="gallery-projets" class="gallery"></div>
 	</section>
 	<section id="contact">
 		<h2>Contact</h2>
@@ -53,15 +67,45 @@
 			<input type="submit" value="Envoyer">
 		</form>
 	</section>
-	<aside id="modal" class="modal" aria-hidden="true" role="dialog" style="display:none">
+	<aside id="modal1" class="modal flex-center" aria-hidden="true" role="dialog" style="display:none">
 		<div class="modal-wrapper">
-			<h2>Galerie photo</h2>
-			<div class="gallerie"></div>
-			<input type="submit" value="Ajouter une photo">
+			<div class="boutons">
+				<button class="btn-modal js-modal" hidden><i class="fa-solid fa-arrow-left" style="color: #000000;"></i></button>
+				<button class="btn-modal js-modal-close close-modal"><i class="fa-solid fa-xmark fa-xl" style="color: #000000;"></i></button>
+			</div>
+			<div class="content flex-center">
+				<h3>Galerie photo</h3>
+				<div id="gallery-modal" class="gallerie"></div>
+				<span class="line"></span>
+				<input type="submit" value="Ajouter une photo" class="js-modal2">
+			</div>
+		</div>
+	</aside>
+	<aside id="modal2" class="modal flex-center" aria-hidden="true" role="dialog" style="display:none">
+		<div class="modal-wrapper">
+			<div class="boutons">
+				<button class="btn-modal js-modal back-modal"><i class="fa-solid fa-arrow-left fa-xl" style="color: #000000;"></i></button>
+				<button class="btn-modal js-modal-close close-modal"><i class="fa-solid fa-xmark fa-xl" style="color: #000000;"></i></button>
+			</div>
+			<div class="content">
+				<h3>Ajout photo</h3>
+				<div class="add-picture flex-center">
+					<i class="fa-regular fa-image fa-2xl" style="color: #B9C5CC;"></i>
+					<input type="file" value="+ Ajouter photo">
+					<p>jpg, png : 4mo max</p>
+				</div>
+				<form action="#" method="post">
+					<label for="title-picture">Titre</label>
+					<input type="text" name="title-picture" id="title-picture" class="modal2-fill">
+					<label for="categories">Categorie</label>
+					<select name="categories" id="categories" class="modal2-fill"></select>
+					<span class="line"></span>
+					<input type="submit" value="Valider" id="validation" disabled>
+				</form>
+			</div>
 		</div>
 	</aside>
 </main>
-
 <footer>
 	<nav>
 		<ul>

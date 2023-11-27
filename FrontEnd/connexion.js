@@ -1,9 +1,9 @@
 const mail = document.getElementById('mail');
 const mdp = document.getElementById('mdp');
 const btn = document.querySelector('input[type=submit]')
-console.log(btn)
 
 const form = document.querySelector('form');
+
 
 (async() => {
     form.addEventListener('submit', async(event) => {
@@ -31,9 +31,8 @@ const form = document.querySelector('form');
             window.location.href='index.html'
         }
         else {
-            erreur = document.createElement('span')
-            erreur.innerText = 'Email et Mot de passe incorrect'
-            form.insertBefore(erreur, btn)
+            document.querySelector('.error').removeAttribute('hidden')
+            
         }
     });
 })()

@@ -8,12 +8,13 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
+	<script src="https://kit.fontawesome.com/9988122eb3.js" crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="./assets/style.css">
 	
 </head>
 <body>
 <header>
-	<h1>Sophie Bluel <span>Architecte d'inteérieur</span></h1>
+	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
 		<ul>
 			<li>projets</li>
@@ -26,6 +27,10 @@
 <main>
 	<section id="contact">
 		<h2>Log In</h2>
+		<span class="error" hidden>
+			<i class="fa-solid fa-triangle-exclamation fa-2xl" style="color: #ca1236;"></i>
+			Email et Mot de passe incorrects!!!
+		</span>
 		<form action="#" method="post">
 			<label for="mail">E-mail</label>
 			<input type="email" name="mail" id="mail">
