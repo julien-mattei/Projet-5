@@ -1,11 +1,12 @@
 (async() => {
     const reponse = await fetch('http://localhost:5678/api/works')
+    console.log(reponse)
     const gallery = await reponse.json()
     const reponse2 = await fetch('http://localhost:5678/api/categories')
     const cat = await reponse2.json()
-    const jeton = window.sessionStorage.getItem('token')
     console.log(cat)
-
+    const jeton = window.sessionStorage.getItem('token')
+   
 //création de variable globale
     let fig = null
     let image = null
@@ -21,23 +22,83 @@
     const openModal2 = document.querySelector('.js-modal2')
     const closeModal = document.querySelectorAll('.js-modal-close')
     const listeCategories = document.getElementById('categories')
+    const form = document.getElementById('form-modal')
+    const file = document.getElementById('file')
+    const addPicture = document.querySelector('.add-picture')
+    const namePic = document.getElementById('title-picture')
+    const option = document.getElementById('categories')
+    const btnVal = document.getElementById('validation')
 
+    file.addEventListener('change', () => {
+        const pic = file.files[0]
+        addPicture.innerHTML = ''
+        const miniature = document.createElement('img')
+        miniature.classList.add('miniature')
+        const reader = new FileReader()
+        addPicture.appendChild(miniature)
+        reader.addEventListener('load', (event) => {
+            miniature.src = event.target.result
+        })
+        reader.readAsDataURL(pic)
+        
+    })
+    
 // Création d'élément du DOM
  // création des éléments de filtres
     const btnFiltres = document.createElement("div")
     btnFiltres.classList.add("filters", "flex-center")
     filtres.appendChild(btnFiltres)
-    console.log(btnFiltres)
+    const btnAll = document.createElement('button')
+    btnAll.id = '0'
+    btnAll.classList.add("btn")
+    btnAll.innerText = 'Tous'
+    btnFiltres.appendChild(btnAll)
 
-// Création liste des catégories pour la modal 2
+// Création liste des catégories pour les filtres et la modal2
     for(c = 0; c<cat.length; c++){
         const option = document.createElement("option")
         option.id = cat[c].id
         option.setAttribute('value', cat[c].name)
+        option.setAttribute('name', 'cat')
         option.innerText = cat[c].name
         listeCategories.appendChild(option)
+        const buttons = document.createElement("button")
+        buttons.innerText = cat[c].name
+        buttons.id = cat[c].id
+        buttons.classList.add("btn")
+        btnFiltres.appendChild(buttons)
     }
     listeCategories.selectedIndex = -1
+
+    // mise en place du filtrage dynamique de la page au clique sur les différentes catégories
+    const btns = document.querySelectorAll('.btn')
+
+    let btnSelected = btns[0]
+    btnSelected.classList.add('selected')
+    for(b = 0; b < btns.length; b++){
+        btns[b].addEventListener('click', (event) => {
+            const testTarget = event.target
+            if(testTarget != btnSelected){
+                btnSelected.classList.remove('selected')
+                btnSelected = testTarget
+                btnSelected.classList.add('selected')
+            }
+        })
+        const btnName = btns[b]
+        if(btnName.textContent != 'Tous'){
+            btns[b].addEventListener('click', () => {
+                const filteredGallery = gallery.filter(obj => obj.category.name === btnName.textContent)
+                document.querySelector(".gallery").innerHTML = ''
+                genererGallerie(filteredGallery, gall)
+            })
+        }
+        else {
+            btns[b].addEventListener('click', () => {
+                document.querySelector(".gallery").innerHTML = ''
+                genererGallerie(gallery, gall)
+            })   
+        }
+    }
 
 // Création de fonctions 
 // Fonction de génération de la gallerie d'image depuis l'API
@@ -77,6 +138,8 @@
         modal.style.display = 'none'
         modal.setAttribute('aria-hidden', 'true')
         modal.removeAttribute('aria-modal')
+        form.reset()
+        listeCategories.selectedIndex = -1
     }
 
 // appel de la fonction pour generer la gallerie d'image avec les titres dans la section portfolio
@@ -88,7 +151,7 @@
 // Création de la suppresion des images de la gallerie via la modal1
     const btnDelete = document.querySelectorAll('.delete')
     for(buttons = 0; buttons<btnDelete.length; buttons++) {
-        const id = btnDelete[buttons].id
+        let id = btnDelete[buttons].id
         btnDelete[buttons].addEventListener('click', async() => {
             const reponse3 = await fetch(`http://localhost:5678/api/works/${id}`, {
                 method: 'DELETE',
@@ -97,11 +160,16 @@
                     'Authorization': 'Bearer ' + jeton 
                 }
             })
-            closeModal(modal1)
-            genererGallerie(gallery, gall)
+            console.log(reponse3)
+            const newGallerie = gallery.filter(obj => obj.id != id)
+            gall.innerHTML = ''
+            gallerie.innerHTML = ''
+            genererGallerie(newGallerie, gall)
+            genererGallerie(newGallerie, gallerie)
         })
+        
     }
-
+    
 // Appel des fonctions de'ouvertures et de fermetures des modals
     openModal1.forEach(clique => {
         clique.addEventListener('click', (event)=>{
@@ -124,48 +192,26 @@
             close(modal2)
         })
     })
-
-// création des filtres
-    const categories = ['Tous']
-    for(elementCategorie = 0; elementCategorie < gallery.length; elementCategorie++){
-        const categorie = gallery[elementCategorie].category.name
-        categories.push(categorie)
-    }
-    const filters = [...new Set(categories)]
-
-// création des boutons de filtres
-    for(filter = 0; filter < filters.length; filter++){
-        const buttons = document.createElement("button")
-        buttons.innerText = filters[filter]
-        buttons.id = filters[filter]
-        buttons.classList.add("btn")
-        btnFiltres.appendChild(buttons)
-    }
-    const btns = document.querySelectorAll('.btn')
-
-// mise en place du filtrage dynamique de la page au clique sur les différentes catégories
-    for(b = 0; b < btns.length; b++){
-        const idBtn = btns[b].id
-        if(idBtn != 'Tous'){
-            btns[b].addEventListener('click', () => {
-                const filteredGallery = gallery.filter(obj => obj.category.name == idBtn)
-                document.querySelector(".gallery").innerHTML = ''
-                genererGallerie(filteredGallery, gall)
-            })
-        }
-        else {
-            btns[b].addEventListener('click', () => {
-                document.querySelector(".gallery").innerHTML = ''
-                genererGallerie(gallery, gall)
-            })   
-        }
-    }
+    const listeLi = document.querySelectorAll('li')
+    listeLi[0].setAttribute('style', 'font-weight : bold')
 
 // Après la connexion d'un utilisateur
     if (jeton !== null ){
         filtres.setAttribute('hidden', '')
         reveal.forEach((element) => {
             element.removeAttribute('hidden')
+        })
+
+// Modification pour login qui devient logout après la connexion
+        const login = document.querySelector('li a')
+        login.textContent = 'logout'
+        login.setAttribute('href', '#')
+
+// Au clique sur logout le token est effacé et une redirection sur l'index non connecté se fait
+        login.addEventListener('click', () => {
+            login.setAttribute('href', 'index.html')
+            window.sessionStorage.removeItem('token')
+            
         })
     }
 })()

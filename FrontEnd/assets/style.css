@@ -212,7 +212,11 @@ footer nav ul {
 	background-color: white;
 	border-color: #1D6154 ;
 }
-
+.selected {
+	color: white;
+	background-color: #1D6154;
+	border-color: none;
+}
 /* Mode édition */
 .edition {
 	width: 100%;
@@ -269,7 +273,7 @@ footer nav ul {
 .modal-wrapper h3 {
 	font-size: 26px;
 	text-align: center;
-	margin-bottom: 30px;
+	margin-bottom: 10px;
 }
 
 .modal-wrapper form {
@@ -281,16 +285,19 @@ footer nav ul {
 .gallerie {
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: space-between;
+	height: 370px;
 	gap: 25px 10px;
 	margin-bottom: 20px;
 }
 .gallerie figure {
 	position: relative;
+	height: 102.57px;
+	width: 76.86px;
 }
 .gallerie img {
-	width: 76.86px;
-	height: 102.57px;
+	object-fit: fill;
+	height: 100%;
+	width: 100%;
 	
 }
 
@@ -309,7 +316,7 @@ footer nav ul {
 	width: 17px;
 	position: absolute;
 	left: 55px;
-	bottom: 85px;
+	bottom: 80px;
 	align-items: center;
 }
 
@@ -341,7 +348,7 @@ footer nav ul {
 	gap: 15px;
 }
 
-a {
+.edit a {
 	text-decoration: none;
 	color: black;
 	font-size: 14px;
@@ -354,4 +361,30 @@ a {
 
 input:disabled {
 	background-color: #A7A7A7;
+}
+
+#file {
+	width: 0.01px;
+	height: 0.01px;
+}
+
+.dl-file {
+	font-family: 'Syne';
+	font-weight: 700;
+	font-size: 14px;
+	color: white;
+	background-color: #1D6154;
+	text-align: center;
+	border-radius: 60px ;
+	width: 180px;
+	padding: 10px 0;
+}
+
+.miniature {
+	height: 169px;
+}
+
+a {
+	text-decoration: none;
+	color: black;
 }

@@ -10,7 +10,7 @@
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
 	<script src="https://kit.fontawesome.com/9988122eb3.js" crossorigin="anonymous"></script>
-	<script src="script.js" defer></script>
+	
 </head>
 <body>
 	<div class="hide"  hidden>
@@ -89,16 +89,18 @@
 			</div>
 			<div class="content">
 				<h3>Ajout photo</h3>
-				<div class="add-picture flex-center">
-					<i class="fa-regular fa-image fa-2xl" style="color: #B9C5CC;"></i>
-					<input type="file" value="+ Ajouter photo">
-					<p>jpg, png : 4mo max</p>
-				</div>
-				<form action="#" method="post">
+				<form action="#" method="post" id="form-modal">
+					<div class="add-picture flex-center">
+						<i class="fa-regular fa-image fa-2xl" style="color: #B9C5CC;"></i>
+						<input type="file" id="file" name="image"/>
+						<label for="file" class="dl-file">+ Ajouter photo</label>
+						<p>jpg, png : 4mo max</p>
+					</div>
 					<label for="title-picture">Titre</label>
-					<input type="text" name="title-picture" id="title-picture" class="modal2-fill">
+					<input type="text" name="title" id="title-picture" class="modal2-fill">
 					<label for="categories">Categorie</label>
-					<select name="categories" id="categories" class="modal2-fill"></select>
+					<select name="categories" id="categories" class="modal2-fill">
+					</select>
 					<span class="line"></span>
 					<input type="submit" value="Valider" id="validation" disabled>
 				</form>
@@ -114,4 +116,5 @@
 	</nav>
 </footer>
 </body>
+<script src="script.js" defer></script>
 </html>
