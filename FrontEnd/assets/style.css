@@ -346,6 +346,7 @@ footer nav ul {
 	height: 169px;
 	align-items: center;
 	gap: 15px;
+	position: relative;
 }
 
 .edit a {
@@ -382,6 +383,7 @@ input:disabled {
 
 .miniature {
 	height: 169px;
+	position: absolute;
 }
 
 a {

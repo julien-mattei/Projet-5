@@ -5,7 +5,10 @@ const btn = document.querySelector('input[type=submit]')
 const form = document.querySelector('form');
 
 
+
 (async() => {
+    const listeLi = document.querySelectorAll('li')
+    listeLi[2].setAttribute('style', 'font-weight : bold')
     form.addEventListener('submit', async(event) => {
         event.preventDefault()
     
@@ -23,7 +26,6 @@ const form = document.querySelector('form');
             } ,
             body: chargeUtile
         })
-
         if( reponse.status === 200){
             const log = await reponse.json()
             const token = log.token

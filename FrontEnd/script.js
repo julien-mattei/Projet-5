@@ -1,10 +1,8 @@
 (async() => {
     const reponse = await fetch('http://localhost:5678/api/works')
-    console.log(reponse)
     const gallery = await reponse.json()
     const reponse2 = await fetch('http://localhost:5678/api/categories')
     const cat = await reponse2.json()
-    console.log(cat)
     const jeton = window.sessionStorage.getItem('token')
    
 //création de variable globale
@@ -28,21 +26,11 @@
     const namePic = document.getElementById('title-picture')
     const option = document.getElementById('categories')
     const btnVal = document.getElementById('validation')
+    const listeLi = document.querySelectorAll('li')
+    listeLi[0].setAttribute('style', 'font-weight : bold') 
 
-    file.addEventListener('change', () => {
-        const pic = file.files[0]
-        addPicture.innerHTML = ''
-        const miniature = document.createElement('img')
-        miniature.classList.add('miniature')
-        const reader = new FileReader()
-        addPicture.appendChild(miniature)
-        reader.addEventListener('load', (event) => {
-            miniature.src = event.target.result
-        })
-        reader.readAsDataURL(pic)
-        
-    })
-    
+
+
 // Création d'élément du DOM
  // création des éléments de filtres
     const btnFiltres = document.createElement("div")
@@ -54,11 +42,11 @@
     btnAll.innerText = 'Tous'
     btnFiltres.appendChild(btnAll)
 
-// Création liste des catégories pour les filtres et la modal2
+// Création liste des catégories pour les filtres et le select de la modal2
     for(c = 0; c<cat.length; c++){
         const option = document.createElement("option")
         option.id = cat[c].id
-        option.setAttribute('value', cat[c].name)
+        option.setAttribute('value', cat[c].id)
         option.setAttribute('name', 'cat')
         option.innerText = cat[c].name
         listeCategories.appendChild(option)
@@ -70,9 +58,8 @@
     }
     listeCategories.selectedIndex = -1
 
-    // mise en place du filtrage dynamique de la page au clique sur les différentes catégories
+// mise en place du filtrage dynamique de la page au clique sur les différentes catégories
     const btns = document.querySelectorAll('.btn')
-
     let btnSelected = btns[0]
     btnSelected.classList.add('selected')
     for(b = 0; b < btns.length; b++){
@@ -99,8 +86,7 @@
             })   
         }
     }
-
-// Création de fonctions 
+ 
 // Fonction de génération de la gallerie d'image depuis l'API
     function genererGallerie(gallery, parent){
         for(picture = 0; picture < gallery.length; picture++){
@@ -116,6 +102,7 @@
                 fig.appendChild(name) 
             }
             else {
+                fig.id =  gallery[picture].id
                 const suppression = document.createElement('button')
                 suppression.classList.add('delete', 'flex-center')
                 suppression.id = gallery[picture].id
@@ -125,7 +112,19 @@
 
         }
     }
+// appel de la fonction pour generer la gallerie d'image avec les titres dans la section portfolio
+genererGallerie(gallery, gall)
+// appel de la fonction pour generer la gallerie dans la modal avec les boutons de suppresion
+    genererGallerie(gallery, gallerie)
 
+// Création de fonction pour reset le formulaire de la modal2
+    function resetForm(){
+        miniature.src =''
+        document.querySelector('.add-picture p').removeAttribute('hidden', '')
+        document.querySelector('.add-picture label').removeAttribute('hidden', '')
+        form.reset()
+        listeCategories.selectedIndex = -1
+    }
 //Création de fonction d'ouverture des modals
     function open(modal) {
         modal.style.display = null
@@ -133,20 +132,36 @@
         modal.setAttribute('aria-modal', 'true')
     }
 
+
 //Création de fonction de fermetures des modals
     function close(modal) {
         modal.style.display = 'none'
         modal.setAttribute('aria-hidden', 'true')
         modal.removeAttribute('aria-modal')
-        form.reset()
-        listeCategories.selectedIndex = -1
+        resetForm()
     }
+// Appel des fonctions de'ouvertures et de fermetures des modals
+openModal1.forEach(clique => {
+    clique.addEventListener('click', (event)=>{
+        event.preventDefault()
+        close(modal2)
+        open(modal1)
+    })
+})
 
-// appel de la fonction pour generer la gallerie d'image avec les titres dans la section portfolio
-    genererGallerie(gallery, gall)
+openModal2.addEventListener('click', (event) => {
+    event.preventDefault()
+    close(modal1)
+    open(modal2)
+})
 
-// appel de la fonction pour generer la gallerie dans la modal avec les boutons de suppresion
-    genererGallerie(gallery, gallerie)
+closeModal.forEach(clique => {
+    clique.addEventListener('click', (event) => {
+        event.preventDefault()
+        close(modal1)
+        close(modal2)
+    })
+})
 
 // Création de la suppresion des images de la gallerie via la modal1
     const btnDelete = document.querySelectorAll('.delete')
@@ -160,40 +175,72 @@
                     'Authorization': 'Bearer ' + jeton 
                 }
             })
-            console.log(reponse3)
-            const newGallerie = gallery.filter(obj => obj.id != id)
-            gall.innerHTML = ''
-            gallerie.innerHTML = ''
-            genererGallerie(newGallerie, gall)
-            genererGallerie(newGallerie, gallerie)
+            if(reponse3.ok === true){
+                const newReponse = await fetch('http://localhost:5678/api/works')
+                const newGallerie = await newReponse.json()
+                gall.innerHTML = ''
+                genererGallerie(newGallerie, gall)
+                const figures = document.querySelectorAll('.gallerie figure')
+                for(f = 0; f<figures.length; f++){
+                    if(figures[f].id === id){
+                        figures[f].remove()
+                    }
+                }
+            }
         })
-        
     }
+
+// Création de la miniature de l'image quand le fichier est ajouter à l'input file dans la modal2
+const miniature = document.createElement('img')
+miniature.classList.add('miniature')
+addPicture.appendChild(miniature)
+file.addEventListener('change', () => {
+    const pic = file.files[0]
+    document.querySelector('.add-picture i').setAttribute('hidden', '')
+    document.querySelector('.add-picture p').setAttribute('hidden', '')
+    document.querySelector('.add-picture label').setAttribute('hidden', '')
+    const reader = new FileReader()
+    reader.addEventListener('load', (event) => {
+        miniature.src = event.target.result
+    })
+    reader.readAsDataURL(pic)
     
-// Appel des fonctions de'ouvertures et de fermetures des modals
-    openModal1.forEach(clique => {
-        clique.addEventListener('click', (event)=>{
-            event.preventDefault()
-            close(modal2)
-            open(modal1)
-        })
+})
+//Verification des champs du formulaire de la modal2
+    form.addEventListener('change', () => {
+        if((file != '') && (namePic.value != '' && option.value)){
+            btnVal.removeAttribute('disabled')
+        }
     })
-
-    openModal2.addEventListener('click', (event) => {
+//Envoi du formulaire à l'API pour la création d'un objet
+    form.addEventListener('submit', async(event) => {
         event.preventDefault()
-        close(modal1)
-        open(modal2)
-    })
-
-    closeModal.forEach(clique => {
-        clique.addEventListener('click', (event) => {
-            event.preventDefault()
-            close(modal1)
-            close(modal2)
+        const formInfo = new FormData()
+        formInfo.append('image', file.files[0],file.files[0].name)
+        formInfo.append('title',namePic.value)
+        const catInteger = parseInt(option.value)
+        formInfo.append('category', catInteger)
+        const reponse4 = await fetch('http://localhost:5678/api/works', {
+            method: 'POST',
+            headers: { 
+                'accept': 'application/json',
+                'Authorization': 'Bearer ' + jeton ,
+            } ,
+            body: formInfo
         })
+        if(reponse4.ok === true){
+            const reponse = await fetch('http://localhost:5678/api/works')
+            const gallery = await reponse.json()
+            gall.innerHTML=''
+            genererGallerie(gallery, gall)
+            gallerie.innerHTML=''
+            genererGallerie(gallery, gallerie)
+            console.log(gallery)
+            resetForm()
+            btnVal.setAttribute('disabled', '')
+        }
+        
     })
-    const listeLi = document.querySelectorAll('li')
-    listeLi[0].setAttribute('style', 'font-weight : bold')
 
 // Après la connexion d'un utilisateur
     if (jeton !== null ){
@@ -211,7 +258,6 @@
         login.addEventListener('click', () => {
             login.setAttribute('href', 'index.html')
             window.sessionStorage.removeItem('token')
-            
         })
     }
 })()
