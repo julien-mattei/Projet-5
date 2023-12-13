@@ -103,15 +103,35 @@
             }
             else {
                 fig.id =  gallery[picture].id
-                const suppression = document.createElement('button')
+                let suppression = document.createElement('button')
                 suppression.classList.add('delete', 'flex-center')
                 suppression.id = gallery[picture].id
                 suppression.innerHTML = `<i class="fa-solid fa-trash-can fa-xs" style="color: #fafafa;"></i>`
                 fig.appendChild(suppression)
+
+                suppression.addEventListener('click', async() => {
+                    const id = suppression.id
+                    const reponse3 = await fetch(`http://localhost:5678/api/works/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'accept': '*/*',
+                            'Authorization': 'Bearer ' + jeton 
+                        }
+                    })
+                    if(reponse3.ok) {
+                        const newReponse = await fetch('http://localhost:5678/api/works')
+                        const newGallerie = await newReponse.json()
+                        gall.innerHTML = ''
+                        genererGallerie(newGallerie, gall)
+                        gallerie.innerHTML = ''
+                        genererGallerie(newGallerie, gallerie)
+                    }
+                })
             }
 
         }
     }
+
 // appel de la fonction pour generer la gallerie d'image avec les titres dans la section portfolio
 genererGallerie(gallery, gall)
 // appel de la fonction pour generer la gallerie dans la modal avec les boutons de suppresion
@@ -163,16 +183,18 @@ closeModal.forEach(clique => {
     })
 })
 
+
 // Création de la suppresion des images de la gallerie via la modal1
+/*
     const btnDelete = document.querySelectorAll('.delete')
-    for(buttons = 0; buttons<btnDelete.length; buttons++) {
+    for(let buttons = 0; buttons<btnDelete.length; buttons++) {
         let id = btnDelete[buttons].id
         btnDelete[buttons].addEventListener('click', async() => {
             const reponse3 = await fetch(`http://localhost:5678/api/works/${id}`, {
                 method: 'DELETE',
                 headers: {
-                    'accept': '*/*',
-                    'Authorization': 'Bearer ' + jeton 
+                    'accept': '*\/*',
+                    //'Authorization': 'Bearer ' + jeton 
                 }
             })
             if(reponse3.ok === true){
@@ -181,7 +203,7 @@ closeModal.forEach(clique => {
                 gall.innerHTML = ''
                 genererGallerie(newGallerie, gall)
                 const figures = document.querySelectorAll('.gallerie figure')
-                for(f = 0; f<figures.length; f++){
+                for(let f = 0; f<figures.length; f++){
                     if(figures[f].id === id){
                         figures[f].remove()
                     }
@@ -190,6 +212,8 @@ closeModal.forEach(clique => {
         })
     }
 
+*/
+    
 // Création de la miniature de l'image quand le fichier est ajouter à l'input file dans la modal2
 const miniature = document.createElement('img')
 miniature.classList.add('miniature')
@@ -208,7 +232,7 @@ file.addEventListener('change', () => {
 })
 //Verification des champs du formulaire de la modal2
     form.addEventListener('change', () => {
-        if((file != '') && (namePic.value != '' && option.value)){
+        if((file != '') && (namePic.value != '' && option.value != '')){
             btnVal.removeAttribute('disabled')
         }
     })
@@ -241,7 +265,7 @@ file.addEventListener('change', () => {
         }
         
     })
-
+    console.log(gallerie)
 // Après la connexion d'un utilisateur
     if (jeton !== null ){
         filtres.setAttribute('hidden', '')
